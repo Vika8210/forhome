@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Invoice – Maa Protection Force Pvt Ltd</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  background: #e0e0e0;
+  padding: 20px;
+}
+
+.page {
+  width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #999;
+}
+
+/* ── TITLE BAR ── */
+.title-bar {
+  background: #d9d9d9;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #999;
+}
+
+/* ── COMPANY HEADER ── */
+.company-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid #ccc;
+}
+.company-left { flex: 1; }
+.company-left .company-name { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+.company-left .company-addr { font-size: 11px; line-height: 1.6; }
+.company-left .gstin-row { font-size: 11px; margin-top: 2px; }
+.company-left .email-row { display: flex; gap: 6px; font-size: 11px; margin-top: 2px; }
+.company-left .email-row strong { font-weight: bold; }
+.company-right { text-align: right; font-size: 12px; line-height: 1.8; }
+.company-right input {
+  border: none; background: transparent;
+  font-size: 12px; font-family: Arial, sans-serif;
+  text-align: right; font-weight: bold; width: 160px;
+}
+.company-right input:focus { outline: 1px dashed #1565c0; background: #f0f6ff; }
+
+/* ── BILL TO ── */
+.bill-to-label {
+  background: #d9d9d9;
+  padding: 5px 16px;
+  font-weight: bold;
+  font-size: 12px;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+  display: inline-block;
+  min-width: 300px;
+}
+.bill-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px 10px;
+  border-bottom: 1px solid #999;
+}
+.bill-left { flex: 1; }
+.bill-left .bill-name { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+.bill-left .bill-addr { font-size: 11px; line-height: 1.7; }
+.bill-left .bill-gstin { font-size: 12px; font-weight: bold; margin-top: 4px; }
+.bill-right { font-size: 12px; text-align: right; padding-top: 30px; }
+.bill-right label { font-weight: bold; }
+
+/* editable inputs inside bill section */
+.editable {
+  border: none;
+  border-bottom: 1px dashed #aaa;
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: inherit;
+  color: inherit;
+  padding: 0 2px;
+}
+.editable:focus { outline: none; border-bottom: 1px solid #1565c0; background: #f0f6ff; }
+.editable.bold { font-weight: bold; font-size: 14px; }
+.editable.addr { width: 340px; display: block; margin-bottom: 2px; }
+.editable.gstin-val { width: 160px; font-weight: bold; }
+.editable.currency-val { width: 60px; }
+.editable.inv-field { width: 150px; font-weight: bold; text-align: right; }
+
+/* ── ITEMS TABLE ── */
+.items-table-wrap { padding: 0; }
+table.items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+table.items th {
+  border: 1px solid #999;
+  background: #fff;
+  padding: 5px 6px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+}
+table.items td {
+  border: 1px solid #999;
+  padding: 0;
+  height: 22px;
+  vertical-align: middle;
+}
+table.items td input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 11.5px;
+  padding: 2px 5px;
+  height: 100%;
+  color: #000;
+}
+table.items td input:focus { outline: none; background: #f0f6ff; }
+table.items td.sr-cell { text-align: center; font-size: 11.5px; color: #000; padding: 2px; }
+table.items td.val-cell input { text-align: right; }
+table.items td.qty-cell input { text-align: center; }
+table.items td.rate-cell input { text-align: right; }
+
+/* col widths */
+.col-sr   { width: 60px; }
+.col-desc { }
+.col-hsn  { width: 90px; }
+.col-uom  { width: 70px; }
+.col-qty  { width: 55px; }
+.col-rate { width: 90px; }
+.col-val  { width: 100px; }
+
+/* ── TOTALS ROW (bottom of table) ── */
+.total-service-row td {
+  border: 1px solid #999;
+  padding: 4px 6px;
+  font-size: 11.5px;
+}
+.total-service-row .label-cell {
+  font-weight: bold;
+  text-align: right;
+  font-size: 12px;
+}
+.total-service-row .amount-cell {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 6px;
+}
+
+/* ── BOTTOM SECTION ── */
+.bottom-section {
+  display: flex;
+  border-top: 1px solid #999;
+}
+
+.bottom-left {
+  flex: 1;
+  padding: 10px 16px;
+  border-right: 1px solid #999;
+}
+.amount-words {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+.amount-words span { font-weight: normal; }
+
+.bank-details { font-size: 11px; line-height: 1.9; }
+.bank-details .bank-title {
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 4px;
+}
+.bank-row { display: flex; gap: 2px; }
+.bank-row .lbl { min-width: 70px; }
+.bank-row .colon { margin-right: 4px; }
+
+.terms-section {
+  margin-top: 12px;
+  font-size: 11px;
+}
+.terms-section .terms-title {
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 4px;
+}
+.terms-section ol {
+  padding-left: 28px;
+  line-height: 1.8;
+}
+.terms-section ol li { list-style: none; position: relative; }
+.terms-section ol li::before {
+  position: absolute;
+  left: -24px;
+  font-weight: bold;
+}
+
+.bottom-right {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+.tax-rows { flex: 1; }
+.tax-row-item {
+  display: flex;
+  border-bottom: 1px solid #999;
+}
+.tax-row-item .tax-label {
+  flex: 1;
+  padding: 5px 8px;
+  font-weight: bold;
+  font-size: 12px;
+  border-right: 1px solid #999;
+  background: #f5f5f5;
+}
+.tax-row-item.highlighted .tax-label {
+  background: #d9d9d9;
+}
+.tax-row-item .tax-value {
+  width: 100px;
+  padding: 3px 6px;
+  text-align: right;
+}
+.tax-row-item .tax-value input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 11.5px;
+  text-align: right;
+  padding: 1px 2px;
+}
+.tax-row-item .tax-value input:focus { outline: none; background: #f0f6ff; }
+
+.sig-row {
+  padding: 10px 10px 8px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: bold;
+  border-top: 1px solid #999;
+  min-height: 50px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+/* ── ACTION BUTTONS (hidden on print) ── */
+.action-bar {
+  width: 900px;
+  margin: 12px auto;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.btn {
+  padding: 10px 28px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 2px solid;
+}
+.btn-add    { background: #fff; border-color: #1565c0; color: #1565c0; }
+.btn-add:hover { background: #e3f0ff; }
+.btn-submit { background: #1565c0; border-color: #1565c0; color: #fff; }
+.btn-submit:hover { background: #1251a3; }
+.btn-dl     { background: #16a34a; border-color: #16a34a; color: #fff; display: none; }
+.btn-dl:hover { background: #15803d; }
+.btn-reset  { background: #fff; border-color: #dc2626; color: #dc2626; }
+.btn-reset:hover { background: #fef2f2; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: #fff; padding: 0; }
+  .page { margin: 0; border: none; width: 100%; }
+  .action-bar { display: none !important; }
+  .editable, table.items td input, .tax-row-item .tax-value input {
+    border: none !important;
+    background: transparent !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="page" id="invoicePage">
+
+  <!-- TITLE -->
+  <div class="title-bar">TAX INVOICE</div>
+
+  <!-- COMPANY HEADER -->
+  <div class="company-header">
+    <div class="company-left">
+      <div class="company-name">MAA PROTECTION FORCE PVT LTD</div>
+      <div class="company-addr">
+        HOUSE NO 557, NR. R K GROUND, AMANE,<br>
+        Amane, Thane, Bhiwandi,<br>
+        Maharashtra, India, 421302
+      </div>
+      <div class="gstin-row">GSTIN/UIN: <input class="editable" id="compGstin" type="text" placeholder="Enter GSTIN" style="width:180px;"></div>
+      <div class="email-row"><strong>Email:</strong> maaprotectionforce@gmail.com</div>
+    </div>
+    <div class="company-right">
+      <input class="editable inv-field" id="invDate" type="text" value="01-Jun-2026" placeholder="Date"><br>
+      <input class="editable inv-field" id="invNo"   type="text" value="MPFPL-014-26-27" placeholder="Invoice No.">
+    </div>
+  </div>
+
+  <!-- BILL TO -->
+  <div>
+    <div class="bill-to-label">Bill To:</div>
+  </div>
+  <div class="bill-section">
+    <div class="bill-left">
+      <div class="bill-name">
+        <input class="editable bold" id="billName" type="text" value="EMIRATES LOGISTICS INDIA PRIVATE LIMITED" style="width:420px;">
+      </div>
+      <div class="bill-addr" style="margin-top:4px;">
+        <input class="editable addr" id="billAddr1" type="text" value="5th Floor, Unit No. 501/502, A&B Wing">
+        <input class="editable addr" id="billAddr2" type="text" value="Polaries Building, Marol Maroshi Road,">
+        <input class="editable addr" id="billAddr3" type="text" value="Andheri East Mumbai - 400059">
+      </div>
+      <div class="bill-gstin">GSTIN: <input class="editable gstin-val" id="billGstin" type="text" value="27AAOCS0189F1Z2"></div>
+    </div>
+    <div class="bill-right">
+      <label>Invoice Currency:</label>
+      <input class="editable currency-val" id="currency" type="text" value="INR">
+    </div>
+  </div>
+
+  <!-- ITEMS TABLE -->
+  <div class="items-table-wrap">
+    <table class="items" id="itemsTable">
+      <thead>
+        <tr>
+          <th class="col-sr">Sr No.</th>
+          <th class="col-desc">Description</th>
+          <th class="col-hsn">HSN Code</th>
+          <th class="col-uom">UOM</th>
+          <th class="col-qty">QTY.</th>
+          <th class="col-rate">Unit Rate</th>
+          <th class="col-val">Value</th>
+        </tr>
+      </thead>
+      <tbody id="itemBody">
+        <!-- rows by JS -->
+      </tbody>
+      <!-- TOTAL SERVICE ROW -->
+      <tfoot>
+        <tr class="total-service-row">
+          <td colspan="5" style="border:1px solid #999;"></td>
+          <td class="label-cell" style="border:1px solid #999;text-align:right;font-weight:bold;padding-right:8px;font-size:12px;">Total Service Value :</td>
+          <td class="amount-cell" style="border:1px solid #999;text-align:right;padding-right:6px;font-weight:bold;" id="totalServiceVal"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- BOTTOM SECTION -->
+  <div class="bottom-section">
+    <div class="bottom-left">
+      <div class="amount-words">
+        <b>Amount (In Word):</b> <span id="amountWords">—</span>
+      </div>
+      <div class="bank-details">
+        <div class="bank-title">Company's Bank Details</div>
+        <div class="bank-row"><span class="lbl">Name</span><span class="colon">:</span> Maa Protection Force Private Limited</div>
+        <div class="bank-row"><span class="lbl">Ac No</span><span class="colon">:</span> 319902010416547</div>
+        <div class="bank-row"><span class="lbl">IFSC Code</span><span class="colon">:</span> UBIN0531995</div>
+        <div class="bank-row"><span class="lbl">Branch</span><span class="colon">:</span> Mumbai(N), Thane</div>
+        <div class="bank-row"><span class="lbl">Swift Code</span><span class="colon">:</span></div>
+        <div class="bank-row"><span class="lbl">Bank Name</span><span class="colon">:</span> UNION BANK OF INDIA</div>
+      </div>
+      <div class="terms-section">
+        <div class="terms-title">Terms &amp; conditions</div>
+        <ol>
+          <li><b>1 .</b>&nbsp; Payment to be made with in 7 days from bill present date.</li>
+          <li><b>2 .</b>&nbsp; Interest @ 5% Monthly will be charged on submission after due date.</li>
+          <li><b>3 .</b>&nbsp; Cheque should be in the name of <b>"Maa Protection Force Pvt Ltd."</b>.</li>
+          <li><b>4 .</b>&nbsp; If any Dispute please Inform in prior, Otherwise same will be considered as accepted &amp; same will proceed for GST</li>
+          <li><b>5 .</b>&nbsp; All disputes subject to MUMBAI AND NAVI MUMBAI Jurisdiction.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="bottom-right">
+      <div class="tax-rows">
+        <div class="tax-row-item">
+          <div class="tax-label">SGST</div>
+          <div class="tax-value"><input type="text" id="sgstVal" placeholder="0.00" readonly></div>
+        </div>
+        <div class="tax-row-item">
+          <div class="tax-label">CGST</div>
+          <div class="tax-value"><input type="text" id="cgstVal" placeholder="0.00" readonly></div>
+        </div>
+        <div class="tax-row-item">
+          <div class="tax-label">R/Off</div>
+          <div class="tax-value"><input type="text" id="roffVal" placeholder="0.00" readonly></div>
+        </div>
+        <div class="tax-row-item highlighted">
+          <div class="tax-label">Invoice Total :</div>
+          <div class="tax-value"><input type="text" id="invoiceTotal" placeholder="0.00" readonly style="font-weight:bold;"></div>
+        </div>
+
+        <!-- SGST % and CGST % controls (hidden on print) -->
+        <div class="tax-row-item" id="sgstPctRow" style="font-size:11px;">
+          <div class="tax-label" style="font-size:11px;font-weight:normal;">SGST %</div>
+          <div class="tax-value"><input type="number" id="sgstPct" value="9" min="0" max="100" oninput="recalc()" style="font-size:11px;"></div>
+        </div>
+        <div class="tax-row-item" id="cgstPctRow" style="font-size:11px;">
+          <div class="tax-label" style="font-size:11px;font-weight:normal;">CGST %</div>
+          <div class="tax-value"><input type="number" id="cgstPct" value="9" min="0" max="100" oninput="recalc()" style="font-size:11px;"></div>
+        </div>
+      </div>
+      <div class="sig-row">Authorised Signature</div>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<!-- ACTION BUTTONS -->
+<div class="action-bar" id="actionBar">
+  <button class="btn btn-reset"  onclick="resetForm()">Reset</button>
+  <button class="btn btn-add"    onclick="addRow()">+ Add Another Item</button>
+  <button class="btn btn-submit" onclick="submitInvoice()">Submit</button>
+  <button class="btn btn-dl"     id="dlBtn" onclick="downloadInvoice()">⬇ Download / Print</button>
+</div>
+
+<script>
+let rowId = 0;
+
+function addRow(desc, hsn, uom, qty, rate) {
+  rowId++;
+  const id = rowId;
+  const tbody = document.getElementById('itemBody');
+  const srNo  = tbody.children.length + 1;
+
+  const tr = document.createElement('tr');
+  tr.id = 'itemrow-' + id;
+  tr.innerHTML = `
+    <td class="sr-cell col-sr" id="sr-${id}">${srNo}</td>
+    <td class="col-desc"><input type="text"   placeholder="" value="${desc||''}"  oninput="recalc()"></td>
+    <td class="col-hsn"><input  type="text"   placeholder="" value="${hsn||''}"></td>
+    <td class="col-uom"><input  type="text"   placeholder="" value="${uom||''}"></td>
+    <td class="qty-cell col-qty"><input  type="number" placeholder="" value="${qty||''}"  min="0" oninput="calcRow(${id});recalc()"></td>
+    <td class="rate-cell col-rate"><input type="number" placeholder="" value="${rate||''}" min="0" step="0.01" oninput="calcRow(${id});recalc()"></td>
+    <td class="val-cell col-val"><input  type="text"   id="rowval-${id}" readonly></td>
+  `;
+  tbody.appendChild(tr);
+  if(qty && rate) calcRow(id);
+  recalc();
+}
+
+function calcRow(id) {
+  const tr = document.getElementById('itemrow-' + id);
+  if(!tr) return;
+  const inputs = tr.querySelectorAll('input');
+  const qty  = parseFloat(inputs[3].value) || 0;
+  const rate = parseFloat(inputs[4].value) || 0;
+  const val  = qty * rate;
+  document.getElementById('rowval-' + id).value = val > 0 ? val.toFixed(2) : '';
+}
+
+function renumber() {
+  const rows = document.querySelectorAll('#itemBody tr');
+  rows.forEach((r, i) => {
+    const srCell = r.querySelector('.sr-cell');
+    if(srCell) srCell.textContent = i + 1;
+  });
+}
+
+function recalc() {
+  let total = 0;
+  document.querySelectorAll('[id^="rowval-"]').forEach(inp => {
+    total += parseFloat(inp.value) || 0;
+  });
+  const sgstPct = parseFloat(document.getElementById('sgstPct').value) || 0;
+  const cgstPct = parseFloat(document.getElementById('cgstPct').value) || 0;
+  const sgst = total * sgstPct / 100;
+  const cgst = total * cgstPct / 100;
+  const raw  = total + sgst + cgst;
+  const rounded = Math.round(raw);
+  const roff = rounded - raw;
+
+  document.getElementById('totalServiceVal').textContent = total > 0 ? total.toFixed(2) : '';
+  document.getElementById('sgstVal').value   = sgst > 0 ? sgst.toFixed(2) : '';
+  document.getElementById('cgstVal').value   = cgst > 0 ? cgst.toFixed(2) : '';
+  document.getElementById('roffVal').value   = roff !== 0 ? roff.toFixed(2) : '0.00';
+  document.getElementById('invoiceTotal').value = rounded > 0 ? rounded.toLocaleString('en-IN', {minimumFractionDigits:2}) : '';
+  document.getElementById('amountWords').textContent = rounded > 0 ? toWords(rounded) + ' Only' : '—';
+}
+
+// Indian number to words
+function toWords(n) {
+  if(n===0) return 'Zero Rupees';
+  const ones=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine',
+    'Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const tensW=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  function hw(x){
+    if(x===0) return '';
+    if(x<20) return ones[x]+' ';
+    if(x<100) return tensW[Math.floor(x/10)]+(x%10?' '+ones[x%10]:'')+' ';
+    return ones[Math.floor(x/100)]+' Hundred '+hw(x%100);
+  }
+  let r='', m=n;
+  const cr=Math.floor(m/10000000); m%=10000000;
+  const lac=Math.floor(m/100000);  m%=100000;
+  const thou=Math.floor(m/1000);   m%=1000;
+  if(cr)   r+=hw(cr)+'Crore ';
+  if(lac)  r+=hw(lac)+'Lakh ';
+  if(thou) r+=hw(thou)+'Thousand ';
+  if(m)    r+=hw(m);
+  return 'Rupees '+r.trim();
+}
+
+function submitInvoice() {
+  const rows = document.querySelectorAll('#itemBody tr');
+  if(!rows.length) { alert('Please add at least one item row.'); return; }
+  document.getElementById('dlBtn').style.display = 'inline-block';
+  alert('✅ Invoice ready! Click "Download / Print" to save as PDF.');
+}
+
+function downloadInvoice() {
+  // hide pct rows before print
+  document.getElementById('sgstPctRow').style.display = 'none';
+  document.getElementById('cgstPctRow').style.display = 'none';
+  window.print();
+  document.getElementById('sgstPctRow').style.display = '';
+  document.getElementById('cgstPctRow').style.display = '';
+}
+
+function resetForm() {
+  if(!confirm('Reset the entire invoice?')) return;
+  document.getElementById('itemBody').innerHTML='';
+  rowId = 0;
+  recalc();
+  document.getElementById('dlBtn').style.display='none';
+  // Add 10 blank rows
+  for(let i=0;i<10;i++) addRow();
+}
+
+// Init: 10 blank rows
+for(let i=0;i<10;i++) addRow();
+</script>
+</body>
+</html>
