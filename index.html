@@ -346,9 +346,9 @@ table.items td.rate-cell input { text-align: right; }
         <tr>
           <th class="col-sr">Sr No.</th>
           <th class="col-desc">Description</th>
-          <th class="col-uom">UOM</th>
-          <th class="col-qty">QTY.</th>
-          <th class="col-rate">Unit Rate</th>
+          <th class="col-uom">Hrs in a Day</th>
+          <th class="col-qty">Total No. of Days</th>
+          <th class="col-rate">Rate Per Day</th>
           <th class="col-val">Value</th>
         </tr>
       </thead>
@@ -451,8 +451,8 @@ function addRow(desc, uom, qty, rate) {
     <td class="sr-cell col-sr" id="sr-${id}">${srNo}</td>
     <td class="col-desc"><input type="text"   placeholder="" value="${desc||''}"  oninput="recalc()"></td>
     <td class="col-uom"><input  type="text"   placeholder="" value="${uom||''}"></td>
-    <td class="qty-cell col-qty"><input  type="number" placeholder="" value="${qty||''}"  min="0" oninput="calcRow(${id});recalc()"></td>
-    <td class="rate-cell col-rate"><input type="number" placeholder="" value="${rate||''}" min="0" step="0.01" oninput="calcRow(${id});recalc()"></td>
+    <td class="qty-cell col-qty"><input  type="number" id="rowqty-${id}" placeholder="" value="${qty||''}"  min="0" oninput="calcRow(${id});recalc()"></td>
+    <td class="rate-cell col-rate"><input type="number" id="rowrate-${id}" placeholder="" value="${rate||''}" min="0" step="0.01" oninput="calcRow(${id});recalc()"></td>
     <td class="val-cell col-val"><input  type="text"   id="rowval-${id}" readonly></td>
   `;
   tbody.appendChild(tr);
@@ -461,11 +461,11 @@ function addRow(desc, uom, qty, rate) {
 }
 
 function calcRow(id) {
-  const tr = document.getElementById('itemrow-' + id);
-  if(!tr) return;
-  const inputs = tr.querySelectorAll('input');
-  const qty  = parseFloat(inputs[2].value) || 0;
-  const rate = parseFloat(inputs[3].value) || 0;
+  const qtyEl  = document.getElementById('rowqty-'  + id);
+  const rateEl = document.getElementById('rowrate-' + id);
+  if(!qtyEl || !rateEl) return;
+  const qty  = parseFloat(qtyEl.value)  || 0;
+  const rate = parseFloat(rateEl.value) || 0;
   const val  = qty * rate;
   document.getElementById('rowval-' + id).value = val > 0 ? val.toFixed(2) : '';
 }
