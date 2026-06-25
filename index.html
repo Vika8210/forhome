@@ -16,7 +16,6 @@ body {
 
 .page {
   width: 900px;
-  max-width: 100%;
   margin: 0 auto;
   background: #fff;
   border: 1px solid #999;
@@ -134,7 +133,6 @@ table.items td.rate-cell input { text-align: right; }
 /* col widths */
 .col-sr   { width: 60px; }
 .col-desc { }
-.col-hsn  { width: 90px; }
 .col-uom  { width: 70px; }
 .col-qty  { width: 55px; }
 .col-rate { width: 90px; }
@@ -259,7 +257,6 @@ table.items td.rate-cell input { text-align: right; }
 /* ── ACTION BUTTONS (hidden on print) ── */
 .action-bar {
   width: 900px;
-  max-width: 100%;
   margin: 12px auto;
   display: flex;
   gap: 12px;
@@ -292,43 +289,6 @@ table.items td.rate-cell input { text-align: right; }
     border: none !important;
     background: transparent !important;
   }
-}
-
-/* ── MOBILE RESPONSIVE ── */
-@media (max-width: 650px) {
-  body { padding: 4px; }
-
-  .page { width: 100%; border: none; }
-
-  .title-bar { font-size: 14px; padding: 6px 0; }
-
-  .company-header { flex-direction: column; gap: 6px; padding: 10px 10px 8px; }
-  .company-right { text-align: left; }
-  .company-right input { text-align: left; width: 100%; }
-
-  .bill-section { flex-direction: column; padding: 8px 10px; gap: 6px; }
-  .bill-right { padding-top: 0; text-align: left; }
-  .editable.bold { font-size: 12px; width: 100%; }
-  .editable.addr { width: 100%; }
-
-  .items-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table.items { min-width: 520px; font-size: 10px; }
-  table.items th { font-size: 10px; padding: 4px 3px; }
-  table.items td input { font-size: 10px; padding: 2px 3px; }
-
-  .bottom-section { flex-direction: column; }
-  .bottom-left { border-right: none; border-bottom: 1px solid #999; padding: 10px; }
-  .bottom-right { width: 100%; }
-  .tax-row-item .tax-label { font-size: 11px; }
-  .tax-row-item .tax-value input { font-size: 11px; }
-
-  .action-bar { width: 100%; flex-wrap: wrap; gap: 8px; padding: 0; margin: 8px auto; }
-  .btn { padding: 9px 12px; font-size: 12px; flex: 1 1 40%; }
-
-  .amount-words { font-size: 11px; }
-  .bank-details { font-size: 10px; line-height: 1.7; }
-  .terms-section { font-size: 10px; }
-  .bill-to-label { min-width: unset; width: 100%; display: block; }
 }
 </style>
 </head>
@@ -386,7 +346,6 @@ table.items td.rate-cell input { text-align: right; }
         <tr>
           <th class="col-sr">Sr No.</th>
           <th class="col-desc">Description</th>
-          <th class="col-hsn">HSN Code</th>
           <th class="col-uom">UOM</th>
           <th class="col-qty">QTY.</th>
           <th class="col-rate">Unit Rate</th>
@@ -480,7 +439,7 @@ table.items td.rate-cell input { text-align: right; }
 <script>
 let rowId = 0;
 
-function addRow(desc, hsn, uom, qty, rate) {
+function addRow(desc, uom, qty, rate) {
   rowId++;
   const id = rowId;
   const tbody = document.getElementById('itemBody');
@@ -491,7 +450,6 @@ function addRow(desc, hsn, uom, qty, rate) {
   tr.innerHTML = `
     <td class="sr-cell col-sr" id="sr-${id}">${srNo}</td>
     <td class="col-desc"><input type="text"   placeholder="" value="${desc||''}"  oninput="recalc()"></td>
-    <td class="col-hsn"><input  type="text"   placeholder="" value="${hsn||''}"></td>
     <td class="col-uom"><input  type="text"   placeholder="" value="${uom||''}"></td>
     <td class="qty-cell col-qty"><input  type="number" placeholder="" value="${qty||''}"  min="0" oninput="calcRow(${id});recalc()"></td>
     <td class="rate-cell col-rate"><input type="number" placeholder="" value="${rate||''}" min="0" step="0.01" oninput="calcRow(${id});recalc()"></td>
@@ -586,12 +544,12 @@ function resetForm() {
   rowId = 0;
   recalc();
   document.getElementById('dlBtn').style.display='none';
-  // Add 10 blank rows
-  for(let i=0;i<10;i++) addRow();
+  // Add 5 blank rows
+  for(let i=0;i<5;i++) addRow();
 }
 
-// Init: 10 blank rows
-for(let i=0;i<10;i++) addRow();
+// Init: 5 blank rows
+for(let i=0;i<5;i++) addRow();
 </script>
 </body>
 </html>
