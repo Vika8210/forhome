@@ -464,8 +464,8 @@ function calcRow(id) {
   const tr = document.getElementById('itemrow-' + id);
   if(!tr) return;
   const inputs = tr.querySelectorAll('input');
-  const qty  = parseFloat(inputs[3].value) || 0;
-  const rate = parseFloat(inputs[4].value) || 0;
+  const qty  = parseFloat(inputs[2].value) || 0;
+  const rate = parseFloat(inputs[3].value) || 0;
   const val  = qty * rate;
   document.getElementById('rowval-' + id).value = val > 0 ? val.toFixed(2) : '';
 }
