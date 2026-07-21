@@ -394,12 +394,8 @@ table.items td.rate-cell input { text-align: right; }
     <div class="bottom-right">
       <div class="tax-rows">
         <div class="tax-row-item">
-          <div class="tax-label">Service Charge</div>
-          <div class="tax-value"><input type="text" id="sgstVal" placeholder="0.00" readonly></div>
-        </div>
-        <div class="tax-row-item">
-          <div class="tax-label"></div>
-          <div class="tax-value"><input type="text" id="cgstVal" placeholder="0.00" readonly></div>
+          <div class="tax-label">Service Charge (5%)</div>
+          <div class="tax-value"><input type="text" id="serviceChargeVal" placeholder="0.00" readonly></div>
         </div>
         <div class="tax-row-item">
           <div class="tax-label"></div>
@@ -410,14 +406,10 @@ table.items td.rate-cell input { text-align: right; }
           <div class="tax-value"><input type="text" id="invoiceTotal" placeholder="0.00" readonly style="font-weight:bold;"></div>
         </div>
 
-        <!-- SGST % and CGST % controls (hidden on print) -->
-        <div class="tax-row-item" id="sgstPctRow" style="font-size:11px;">
-          <div class="tax-label" style="font-size:11px;font-weight:normal;">SGST %</div>
-          <div class="tax-value"><input type="number" id="sgstPct" value="9" min="0" max="100" oninput="recalc()" style="font-size:11px;"></div>
-        </div>
-        <div class="tax-row-item" id="cgstPctRow" style="font-size:11px;">
-          <div class="tax-label" style="font-size:11px;font-weight:normal;">CGST %</div>
-          <div class="tax-value"><input type="number" id="cgstPct" value="9" min="0" max="100" oninput="recalc()" style="font-size:11px;"></div>
+        <!-- Service Charge % control (hidden on print) -->
+        <div class="tax-row-item" id="svcPctRow" style="font-size:11px;">
+          <div class="tax-label" style="font-size:11px;font-weight:normal;">Service Charge %</div>
+          <div class="tax-value"><input type="number" id="svcPct" value="5" min="0" max="100" oninput="recalc()" style="font-size:11px;"></div>
         </div>
       </div>
       <div class="sig-row">Authorised Signature</div>
@@ -481,17 +473,14 @@ function recalc() {
   document.querySelectorAll('[id^="rowval-"]').forEach(inp => {
     total += parseFloat(inp.value) || 0;
   });
-  const sgstPct = parseFloat(document.getElementById('sgstPct').value) || 0;
-  const cgstPct = parseFloat(document.getElementById('cgstPct').value) || 0;
-  const sgst = total * sgstPct / 100;
-  const cgst = total * cgstPct / 100;
-  const raw  = total + sgst + cgst;
+  const svcPct = parseFloat(document.getElementById('svcPct').value) || 0;
+  const svcCharge = total * svcPct / 100;
+  const raw  = total + svcCharge;
   const rounded = Math.round(raw);
   const roff = rounded - raw;
 
   document.getElementById('totalServiceVal').textContent = total > 0 ? total.toFixed(2) : '';
-  document.getElementById('sgstVal').value   = sgst > 0 ? sgst.toFixed(2) : '';
-  document.getElementById('cgstVal').value   = cgst > 0 ? cgst.toFixed(2) : '';
+  document.getElementById('serviceChargeVal').value = svcCharge > 0 ? svcCharge.toFixed(2) : '';
   document.getElementById('roffVal').value   = roff !== 0 ? roff.toFixed(2) : '0.00';
   document.getElementById('invoiceTotal').value = rounded > 0 ? rounded.toLocaleString('en-IN', {minimumFractionDigits:2}) : '';
   document.getElementById('amountWords').textContent = rounded > 0 ? toWords(rounded) + ' Only' : '—';
@@ -528,12 +517,10 @@ function submitInvoice() {
 }
 
 function downloadInvoice() {
-  // hide pct rows before print
-  document.getElementById('sgstPctRow').style.display = 'none';
-  document.getElementById('cgstPctRow').style.display = 'none';
+  // hide pct row before print
+  document.getElementById('svcPctRow').style.display = 'none';
   window.print();
-  document.getElementById('sgstPctRow').style.display = '';
-  document.getElementById('cgstPctRow').style.display = '';
+  document.getElementById('svcPctRow').style.display = '';
 }
 
 function resetForm() {
